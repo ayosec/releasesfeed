@@ -8,3 +8,10 @@ description = "Collect releases in GitHub repositories and generate a digest"
 repository = "https://github.com/ayosec/releasesfeed"
 
 [dependencies]
+chrono = { version = "0.4.19", features = ["serde"] }
+dirs = "3"
+reqwest = { version = "0.11.3", features = ["json"] }
+rss = "1.10.0"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1.6.0", features = ["rt-multi-thread", "net", "macros", "sync"] }
