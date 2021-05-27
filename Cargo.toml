@@ -1,0 +1,10 @@
+[package]
+name = "releasesfeed"
+version = "0.1.0"
+authors = ["ayosec@gmail.com"]
+license = "Apache-2.0"
+edition = "2018"
+description = "Collect releases in GitHub repositories and generate a digest"
+repository = "https://github.com/ayosec/releasesfeed"
+
+[dependencies]
