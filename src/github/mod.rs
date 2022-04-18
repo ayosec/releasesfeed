@@ -29,7 +29,18 @@ pub async fn find_releases(access_token: AccessToken, tx: mpsc::Sender<Repositor
             .basic_auth(&access_token.user, Some(&access_token.token))
             .send()
             .await
-            .unwrap()
+            .unwrap();
+
+        if !response.status().is_success() {
+            eprintln!(
+                "Request failed for {:?}: {:#?}",
+                access_token.user, response
+            );
+            eprintln!("{:?}", response.text().await);
+            return;
+        }
+
+        let repositories = response
             .json::<graphql::QueryResponse>()
             .await
             .unwrap()
@@ -37,7 +48,7 @@ pub async fn find_releases(access_token: AccessToken, tx: mpsc::Sender<Repositor
             .viewer
             .starred_repositories;
 
-        for repository in response.nodes {
+        for repository in repositories.nodes {
             if let Some(release) = &repository.latest_release {
                 if !release.is_prerelease {
                     tx.send(repository).await.unwrap();
@@ -45,8 +56,8 @@ pub async fn find_releases(access_token: AccessToken, tx: mpsc::Sender<Repositor
             }
         }
 
-        if response.page_info.has_next_page {
-            cursor = response.page_info.end_cursor;
+        if repositories.page_info.has_next_page {
+            cursor = repositories.page_info.end_cursor;
         } else {
             break;
         }
