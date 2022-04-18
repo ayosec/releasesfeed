@@ -14,7 +14,7 @@ pub struct AccessToken {
 pub fn tokens() -> io::Result<Vec<AccessToken>> {
     match std::env::var("RF_GITHUB_TOKENS") {
         Ok(var) => {
-            let tokens = var.split(';').map(split_parts).flatten();
+            let tokens = var.split(';').filter_map(split_parts);
             Ok(tokens.collect())
         }
 
@@ -48,7 +48,7 @@ fn parse_line(line: io::Result<String>) -> io::Result<Option<AccessToken>> {
         return Ok(None);
     }
 
-    Ok(split_parts(&trim))
+    Ok(split_parts(trim))
 }
 
 fn split_parts(item: &str) -> Option<AccessToken> {
